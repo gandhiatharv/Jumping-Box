@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viewed Crash Course Video Checklist</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            overflow: auto;
+            max-height: 70vh;
+            max-width: 90%;
+            margin: auto;
+            border-radius: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            color: white;
+        }
+
+        th, td {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.15);
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            left: 0;
+            backdrop-filter: blur(5px);
+            text-transform: uppercase;
+            padding: 10px;
+        }
+
+        tbody th {
+            position: sticky;
+            left: 0;
+            background: rgba(255, 255, 255, 0.15);
+            text-align: left;
+            padding-left: 10px;
+            font-size: 14px;
+        }
+
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            appearance: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            transition: all 0.3s ease;
+        }
+
+        input[type="checkbox"]:checked {
+            background: #ffcc00;
+            border-color: #ffcc00;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+        }
+
+        td:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.08);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #ff4b2b, #ff416c);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #ff6b3d, #ff609c);
+            transform: scale(1.08);
+        }
+
+    </style>
+</head>
+<body>
+    <h2>Viewed Crash Course Video Checklist</h2>
+    <div class="container">
+        <table id="checklistTable">
+            <thead>
+                <tr>
+                    <th></th> <!-- Empty Top-Left Corner -->
+                    <script>
+                        document.write('<th>' + Array.from({ length: 50 }, (_, i) => i + 1).join('</th><th>') + '</th>');
+                    </script>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <button onclick="clearChecklist()">Reset Checklist</button>
+
+    <script>
+        const tableBody = document.getElementById("tableBody");
+        const storageKey = "checklistData";
+
+        // Labels for Row Headers
+        const rowLabels = [
+            "Artificial Intelligence", "Anatomy", "Art History", "Astronomy", "Black American History",
+            "Big History", "Biology", "Biology (2012)", "Botany", "Entrepreneurship",
+            "Business", "Chemistry", "Climate + Energy", "Computer Science", "Ecology",
+            "Economics", "Engineering", "European History", "Film Criticism", "Film History",
+            "Film Production", "Games", "Geography", "History of Science", "Intellectual Property",
+            "Linguistics", "Literature", "Media Literacy", "Mythology", "Navigating Digital Information",
+            "Organic Chemistry", "Outbreak Science", "Philosophy", "Physics", "Political Theory",
+            "Psychology", "Public Health", "Religions", "Sociology", "Statistics",
+            "Study Skills", "Theater", "US Government & Politics", "US History", "World History",
+            "World History II", "Zoology", "Empty 1", "Empty 2", "Empty 3"
+        ];
+
+        function loadChecklist() {
+            let savedData = JSON.parse(localStorage.getItem(storageKey)) || {};
+            for (let i = 0; i < 50; i++) {
+                let row = document.createElement("tr");
+
+                // Row header (label)
+                let rowHeader = document.createElement("th");
+                rowHeader.textContent = rowLabels[i]; // Assign label from the list
+                row.appendChild(rowHeader);
+
+                for (let j = 0; j < 50; j++) {
+                    let cell = document.createElement("td");
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    let id = `R${i+1}C${j+1}`;
+                    checkbox.id = id;
+                    checkbox.checked = savedData[id] || false;
+                    checkbox.addEventListener("change", saveChecklist);
+                    cell.appendChild(checkbox);
+                    row.appendChild(cell);
+                }
+                tableBody.appendChild(row);
+            }
+        }
+
+        function saveChecklist() {
+            let data = {};
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                data[checkbox.id] = checkbox.checked;
+            });
+            localStorage.setItem(storageKey, JSON.stringify(data));
+        }
+
+        function clearChecklist() {
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            localStorage.removeItem(storageKey);
+        }
+
+        loadChecklist();
+    </script>
+</body>
+</html>
